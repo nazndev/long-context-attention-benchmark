@@ -77,7 +77,7 @@ print("spbench", spbench.__version__)
 CONFIG = '''# These values clone the project on a fresh Colab runtime.
 # Leave ZIP_PATH and PROJECT_DIR empty.
 REPO_URL = "https://github.com/nazndev/long-context-attention-benchmark.git"
-REPO_COMMIT = "ee3c2a1045f48b9ad77ca61f3d480f8cb669e8d6"
+REPO_COMMIT = "6befb712fb4666afbf8961f484f24e0cf4c9511d"
 ZIP_PATH = ""
 PROJECT_DIR = ""
 '''

@@ -95,10 +95,11 @@ def install_project(project_dir: str | Path) -> None:
         [python, "-m", "pip", "install", "PyYAML", "pandas", "matplotlib", "pytest", "--upgrade-strategy", "only-if-needed"]
     )
     after = torch_identity()
-    from spbench.provenance import torch_was_preserved
-
-    if not torch_was_preserved(before, after):
+    if before != after:
         raise RuntimeError(
             f"PyTorch changed from {before} to {after}. The CUDA installation was not left in place."
         )
+    src = str((project / "src").resolve())
+    if src not in sys.path:
+        sys.path.insert(0, src)
     print(f"Keeping the existing PyTorch {after[0]} (CUDA build: {after[1]}). It was not upgraded.")

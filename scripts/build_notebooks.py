@@ -52,17 +52,24 @@ if project is None:
         "or set REPO_URL and REPO_COMMIT."
     )
 os.chdir(project)
-if str(project) not in sys.path:
-    sys.path.insert(0, str(project))
+src = project / "src"
+for entry in (src, project):
+    entry_text = str(entry)
+    if entry_text not in sys.path:
+        sys.path.insert(0, entry_text)
 print("Project directory:", project)
 '''
 
 INSTALL = '''import importlib.util
+import sys
 bootstrap_path = project / "scripts" / "colab_bootstrap.py"
 spec = importlib.util.spec_from_file_location("colab_bootstrap", bootstrap_path)
 bootstrap = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bootstrap)
 bootstrap.install_project(project)
+src = project / "src"
+if str(src) not in sys.path:
+    sys.path.insert(0, str(src))
 import spbench
 print("spbench", spbench.__version__)
 '''

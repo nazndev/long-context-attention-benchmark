@@ -1,0 +1,89 @@
+# Primary attention microbenchmark. This file is the experiment definition.
+# It does not record measurements. Sequence lengths are the initial grid, not
+# a claim about the memory limit of any GPU.
+
+seed: 42
+batch_size: 1
+num_heads: 32
+kv_heads: 32
+head_dim: 64
+hidden_size: 2048
+dtype: bf16
+fallback_dtype: fp16
+dropout: 0.0
+causal: true
+layout: BSHD
+phases:
+  - forward
+  - forward_backward
+sequence_lengths:
+  - 1024
+  - 2048
+  - 4096
+  - 8192
+  - 16384
+  - 32768
+  - 65536
+  - 131072
+  - 262144
+  - 524288
+  - 1048576
+colab_baseline_sequence_lengths:
+  - 1024
+  - 2048
+  - 4096
+  - 8192
+  - 16384
+correctness_lengths:
+  - 128
+  - 256
+  - 512
+gpu_counts:
+  - 2
+  - 4
+  - 8
+supplemental_baseline_gpu_count: 1
+warmup_iterations: 5
+measured_iterations: 10
+independent_repeats: 3
+process_group_timeout_seconds: 180
+tolerance_initial:
+  rtol: 0.05
+  atol: 0.05
+weak_context_tokens_per_gpu:
+  - 4096
+  - 8192
+topologies:
+  - name: single_node
+    nodes: 1
+    gpu_counts:
+      - 2
+      - 4
+      - 8
+    expected_link: PCIe
+    link_verified: false
+  - name: two_nodes
+    nodes: 2
+    gpu_counts:
+      - 2
+      - 4
+      - 8
+    expected_link: 100GbE
+    link_verified: false
+usp_degrees:
+  2:
+    - [1, 2]
+    - [2, 1]
+  4:
+    - [2, 2]
+  8:
+    - [2, 4]
+    - [4, 2]
+methods:
+  - ring
+  - distflashattn
+  - ulysses
+  - usp
+supplemental_baselines:
+  - single_gpu_sdpa
+  - single_gpu_flash

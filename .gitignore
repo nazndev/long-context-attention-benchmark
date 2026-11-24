@@ -1,0 +1,34 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+.DS_Store
+
+# Internal instruction documents. Keep these on the local machine only.
+# Covers this assignment's research plan and later revisions of the same kind.
+CSE598_Project_*Research_Plan*.yml
+CSE598_Project_*Research_Plan*.yaml
+*Colab_Research_Plan*
+*cursor_instructions*
+
+# Generated upload archives and secret-bearing local files.
+spbench_colab.zip
+results/*.zip
+.env
+.env.*
+*.pem
+credentials.json
+secrets.json
+
+# Measurement artifacts are produced by runs. Analytical figures are kept.
+results/raw/*
+!results/raw/.gitkeep
+results/processed/*
+!results/processed/.gitkeep
+results/figures/measured/*
+!results/figures/measured/.gitkeep

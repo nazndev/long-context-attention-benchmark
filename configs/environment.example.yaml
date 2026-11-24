@@ -1,0 +1,38 @@
+# Copy to environment.yaml on the machine that actually runs a benchmark.
+# Do not put passwords, cloud tokens, or SSH keys in this file.
+# The Mac CPU development lockfile is requirements-cpu-dev.txt. Do not install
+# that file on Google Colab or on the Linux GPU servers: it would replace the
+# CUDA PyTorch build.
+
+phase1_development_host:
+  observed: 2026-11-24
+  machine: Apple M4
+  system: macOS
+  cuda_available: false
+  nvidia_smi: absent
+  note: CPU correctness environment only. Not a measurement host.
+
+requested_server:
+  operating_system: Linux
+  gpus: matched NVIDIA models, at least 4 on one server; preferably 8
+  second_server: equal GPU count, verified 100 Gb Ethernet
+  transport_to_record: TCP sockets or RoCE/RDMA, from NCCL logs, not from the cable label
+  software_to_pin_after_install:
+    - python
+    - pytorch
+    - cuda_runtime
+    - nvidia_driver
+    - nccl
+    - flash_attention
+    - ring_flash_attn
+    - deepspeed
+    - yunchang
+    - lightseq_checkout
+    - nsight_systems
+  upstream_commits_audited:
+    ring_attention_jax: d2ea1af9a288f85ea2fd74690ece1c16d2eebc83
+    ring_flash_attention: 786677930bce4f6022166899c88ce2c00c814ee2
+    lightseq: 8f486dad3d0670057dfbe3b30c003080b61c5325
+    deepspeed: 140a2fbcd253d600e094ff7e659064180928246b
+    yunchang: a5f8f600d435ced180a97c91c68e87ff3cfb8f89
+    flash_attention: b038b4974f26ba3bc8ab3c8b840c60b0432ce39b

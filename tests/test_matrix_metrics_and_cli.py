@@ -123,9 +123,13 @@ def test_dry_run_rejects_invalid_degree_and_alignment():
     hardware = detect_hardware()
     rows = expand_matrix(config, hardware, {})
     assert rows
-    assert all(row.status != "planned" for row in rows)
     assert any(row.status == "rejected" for row in rows)
-    assert not hardware["cuda_available"]
+    for row in rows:
+        if row.method in {"ring", "distflashattn", "ulysses", "usp"}:
+            assert row.status != "planned"
+        if row.status == "planned":
+            assert row.method == "single_gpu_sdpa"
+            assert hardware["cuda_available"]
 
 
 def test_sweep_cli_writes_a_plan_without_measurements(tmp_path: Path):

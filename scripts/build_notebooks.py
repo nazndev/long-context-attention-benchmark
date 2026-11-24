@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 BOOTSTRAP = '''import os
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -39,9 +40,12 @@ elif REPO_URL:
     if not REPO_COMMIT:
         raise ValueError("Set REPO_COMMIT to a full commit hash. Do not track a moving branch.")
     dest = Path("/content/long-context-attention-benchmark" if os.path.isdir("/content") else "colab_clone")
+    if dest.exists() and not (dest / ".git").exists():
+        shutil.rmtree(dest)
     if not (dest / ".git").exists():
         subprocess.check_call(["git", "clone", REPO_URL, str(dest)])
-    subprocess.check_call(["git", "checkout", REPO_COMMIT], cwd=dest)
+    subprocess.check_call(["git", "fetch", "origin", "main"], cwd=dest)
+    subprocess.check_call(["git", "checkout", "--detach", REPO_COMMIT], cwd=dest)
     project = discover(dest)
 else:
     project = Path(PROJECT_DIR).resolve() if PROJECT_DIR else discover(Path.cwd())

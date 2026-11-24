@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -56,9 +57,12 @@ def materialize_source(repo_url: str = "", commit: str = "", zip_path: str = "",
         if not commit:
             raise ValueError("Set REPO_COMMIT to an immutable commit. A branch name is not enough.")
         target = Path(destination or "/content/long-context-attention-benchmark")
+        if target.exists() and not (target / ".git").exists():
+            shutil.rmtree(target)
         if not (target / ".git").exists():
             subprocess.check_call(["git", "clone", repo_url, str(target)])
-        subprocess.check_call(["git", "checkout", commit], cwd=target)
+        subprocess.check_call(["git", "fetch", "origin", "main"], cwd=target)
+        subprocess.check_call(["git", "checkout", "--detach", commit], cwd=target)
         found = discover_repo(target)
         if found is None:
             raise FileNotFoundError(f"Checked out {commit} but src/spbench is missing")

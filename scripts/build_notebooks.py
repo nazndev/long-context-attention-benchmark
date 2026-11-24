@@ -67,11 +67,10 @@ import spbench
 print("spbench", spbench.__version__)
 '''
 
-CONFIG = '''# Fresh Colab runtime: upload the project ZIP to /content and set ZIP_PATH.
-# If the repository has a remote, set REPO_URL and the full REPO_COMMIT instead.
-# Leave all three empty when this notebook is already running inside the project tree.
-REPO_URL = ""
-REPO_COMMIT = ""
+CONFIG = '''# These values clone the project on a fresh Colab runtime.
+# Leave ZIP_PATH and PROJECT_DIR empty.
+REPO_URL = "https://github.com/nazndev/long-context-attention-benchmark.git"
+REPO_COMMIT = "278c9050e7d8807a45f262201a5aa0760508c061"
 ZIP_PATH = ""
 PROJECT_DIR = ""
 '''
@@ -106,18 +105,11 @@ write(
 
 ## Run this on a fresh Google Colab runtime
 
-1. On your computer, from the project root, build the upload package. It excludes the virtualenv, the CPU lockfile, and internal instruction files:
-
-```bash
-python3 scripts/make_colab_package.py
-```
-
-2. Open Google Colab. **File → Upload notebook** and choose `notebooks/01_colab_setup_and_preliminary.ipynb` from the package, or upload that notebook by itself.
-3. **Runtime → Change runtime type → GPU → Save.** The assigned GPU may be a T4, L4, A100, or another device. Do not assume which one you will get.
-4. Upload `spbench_colab.zip` so it lands at `/content/spbench_colab.zip`.
-5. In the configuration cell, set `ZIP_PATH = "/content/spbench_colab.zip"`. Leave `REPO_URL` empty unless you clone a real commit.
-6. **Runtime → Run all.**
-7. Download the ZIP the last cell writes before the runtime is recycled.
+1. In Colab, open this notebook from GitHub: `nazndev/long-context-attention-benchmark`, file `notebooks/01_colab_setup_and_preliminary.ipynb`.
+2. **Runtime → Change runtime type → GPU → Save.**
+3. The configuration cell already has the repository URL and commit. Do not change it.
+4. **Runtime → Run all.**
+5. Download the ZIP the last cell writes before the runtime is recycled.
 
 The installer keeps Colab's existing PyTorch. It does not install `requirements-cpu-dev.txt`.
         """),
@@ -209,11 +201,11 @@ This notebook is independent of notebook 01. It detects the assigned CUDA device
 
 ## Fresh Colab runtime
 
-1. **Runtime → Change runtime type → GPU → Save.**
-2. Upload `spbench_colab.zip` to `/content/spbench_colab.zip`.
-3. Set `ZIP_PATH = "/content/spbench_colab.zip"` in the configuration cell.
+1. Open `notebooks/02_colab_single_gpu_baseline.ipynb` from the same GitHub repository in a new Colab runtime.
+2. **Runtime → Change runtime type → GPU → Save.**
+3. The configuration cell already has the repository URL and commit. Do not change it.
 4. **Runtime → Run all.**
-5. Download the baseline manifest ZIP from the last cell. If the manifest says `skipped_no_cuda`, no throughput was measured.
+5. Download the baseline ZIP from the last cell. If the manifest says `skipped_no_cuda`, no throughput was measured.
 
 The bounded lengths are 1024, 2048, 4096, 8192, and 16384. A longer length is a separate decision, not the default. FP16 results, if a T4 forces that dtype, stay labeled FP16.
         """),

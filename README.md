@@ -6,23 +6,14 @@ Phase 1 is a CPU-checked implementation and a Colab-ready single-GPU baseline. I
 
 ## Run notebooks 01 and 02 on a fresh Colab GPU runtime
 
-Build the upload once. The ZIP excludes `.venv`, `requirements-cpu-dev.txt`, and the internal research-plan file.
-
-```bash
-python3 scripts/make_colab_package.py
-```
-
-That writes `spbench_colab.zip` in this directory.
+The configuration cell in each notebook already points at this repository and commit `278c9050e7d8807a45f262201a5aa0760508c061`.
 
 ### Notebook 01
 
-1. Open [Google Colab](https://colab.research.google.com/).
-2. **File → Upload notebook**. Choose `notebooks/01_colab_setup_and_preliminary.ipynb`.
-3. **Runtime → Change runtime type → GPU → Save.** Use whatever GPU Colab assigns.
-4. In the Colab file browser, upload `spbench_colab.zip`. The path must be `/content/spbench_colab.zip`.
-5. In the configuration cell set `ZIP_PATH = "/content/spbench_colab.zip"`. Leave `REPO_URL` and `REPO_COMMIT` empty.
-6. **Runtime → Run all.**
-7. Download the evidence ZIP from the last cell before the session ends.
+1. In Colab, open `notebooks/01_colab_setup_and_preliminary.ipynb` from GitHub.
+2. **Runtime → Change runtime type → GPU → Save.**
+3. **Runtime → Run all.** Do not edit the configuration cell.
+4. Download the evidence ZIP from the last cell before the session ends.
 
 The installer keeps the PyTorch that is already in the runtime. If that PyTorch is missing, the notebook stops. It does not install a CPU wheel over a CUDA runtime, and it does not install `requirements-cpu-dev.txt`.
 
@@ -30,12 +21,10 @@ The installer keeps the PyTorch that is already in the runtime. If that PyTorch 
 
 Use a new runtime so the baseline does not depend on notebook 01's kernel state.
 
-1. **File → Upload notebook**. Choose `notebooks/02_colab_single_gpu_baseline.ipynb`.
+1. Open `notebooks/02_colab_single_gpu_baseline.ipynb` from GitHub in a new runtime.
 2. **Runtime → Change runtime type → GPU → Save.**
-3. Upload `spbench_colab.zip` again to `/content/spbench_colab.zip`.
-4. Set `ZIP_PATH = "/content/spbench_colab.zip"`.
-5. **Runtime → Run all.**
-6. Download the baseline ZIP from the last cell.
+3. **Runtime → Run all.** Do not edit the configuration cell.
+4. Download the baseline ZIP from the last cell.
 
 Notebook 02 prints the GPU name, architecture, total memory, and free memory. It selects BF16 only on compute capability 8.0 or newer when BF16 is supported. Otherwise the rows are FP16. It names the PyTorch SDPA backend that completed a tiny probe. Forward and forward-plus-backward are timed in separate subprocesses for lengths 1024, 2048, 4096, 8192, and 16384. An out-of-memory failure stops that phase and records the last success and the first OOM. If every length finishes, the manifest records a tested upper bound and does not call it the hardware maximum. Throughput and memory figures are written only from successful measured rows, one pair of figures per phase.
 

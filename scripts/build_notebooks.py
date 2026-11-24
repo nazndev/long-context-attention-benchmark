@@ -39,13 +39,22 @@ if ZIP_PATH:
 elif REPO_URL:
     if not REPO_COMMIT:
         raise ValueError("Set REPO_COMMIT to a full commit hash. Do not track a moving branch.")
+    for anchor in ("/content", "/tmp", "/"):
+        if os.path.isdir(anchor):
+            os.chdir(anchor)
+            break
     dest = Path("/content/long-context-attention-benchmark" if os.path.isdir("/content") else "colab_clone")
-    if dest.exists() and not (dest / ".git").exists():
+    if dest.exists() and not (dest / ".git").is_dir():
         shutil.rmtree(dest)
-    if not (dest / ".git").exists():
-        subprocess.check_call(["git", "clone", REPO_URL, str(dest)])
-    subprocess.check_call(["git", "fetch", "origin", "main"], cwd=dest)
-    subprocess.check_call(["git", "checkout", "--detach", REPO_COMMIT], cwd=dest)
+    def run_git(args, cwd):
+        completed = subprocess.run(args, cwd=str(cwd), text=True, capture_output=True)
+        if completed.returncode != 0:
+            detail = (completed.stderr or completed.stdout or "").strip()
+            raise RuntimeError(detail or f"git exited {completed.returncode}")
+    if not (dest / ".git").is_dir():
+        run_git(["git", "clone", REPO_URL, str(dest)], dest.parent if dest.is_absolute() else Path.cwd())
+    run_git(["git", "fetch", "origin", "main"], dest)
+    run_git(["git", "checkout", "--detach", REPO_COMMIT], dest)
     project = discover(dest)
 else:
     project = Path(PROJECT_DIR).resolve() if PROJECT_DIR else discover(Path.cwd())

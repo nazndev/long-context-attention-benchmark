@@ -67,8 +67,9 @@ def plot_throughput(frame: pd.DataFrame, path: str | Path) -> dict[str, int]:
     _require_measured(success, destination)
     figure, axis = plt.subplots(figsize=(8, 4.5))
     if not success.empty:
-        columns = ["method", "topology"] + (["phase"] if "phase" in success.columns else [])
-        for key, group in success.groupby(columns):
+        columns = [name for name in ("method", "topology", "phase") if name in success.columns]
+        groups = success.groupby(columns, dropna=False) if columns else [(("single_gpu_sdpa",), success)]
+        for key, group in groups:
             ordered = group.sort_values("global_sequence_length")
             label = " / ".join(str(part) for part in (key if isinstance(key, tuple) else (key,)))
             axis.plot(

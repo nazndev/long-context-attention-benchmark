@@ -404,7 +404,8 @@ if not frame.empty and "origin" in frame.columns:
 if measured.empty:
     print("No successful measured rows. Refusing to draw throughput or memory figures.")
 else:
-    comparable = measured.groupby(["dtype", "gpu_model", "topology"], dropna=False).size()
+    group_keys = [name for name in ("dtype", "gpu_model", "topology") if name in measured.columns]
+    comparable = measured.groupby(group_keys, dropna=False).size() if group_keys else pd.Series({"all": len(measured)})
     print("Comparable groups (do not pool across these keys):")
     print(comparable)
     plot_throughput(measured, project / "results" / "figures" / "measured" / "throughput.png")

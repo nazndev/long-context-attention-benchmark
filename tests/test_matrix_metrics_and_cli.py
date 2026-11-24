@@ -156,6 +156,23 @@ def test_benchmark_cli_refuses_without_cuda(tmp_path: Path):
     assert rows[0]["step_seconds"] is None
 
 
+def test_throughput_plot_accepts_baseline_rows_without_topology(tmp_path: Path):
+    frame = pd.DataFrame(
+        {
+            "origin": ["measured", "measured"],
+            "status": ["success", "success"],
+            "method": ["single_gpu_sdpa", "single_gpu_sdpa"],
+            "phase": ["forward", "forward"],
+            "global_sequence_length": [1024, 2048],
+            "global_tokens_per_second": [100.0, 80.0],
+        }
+    )
+    path = tmp_path / "results" / "figures" / "measured" / "single_gpu_throughput_forward.png"
+    summary = plot_throughput(frame, path)
+    assert path.is_file()
+    assert summary == {"plotted": 2, "withheld": 0}
+
+
 def test_research_plot_rejects_fixtures_and_analytical_plot_is_labeled(tmp_path: Path):
     analytical = pd.DataFrame(
         {

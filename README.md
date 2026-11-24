@@ -6,7 +6,7 @@ Phase 1 is a CPU-checked implementation and a Colab-ready single-GPU baseline. I
 
 ## Run notebooks 01 and 02 on a fresh Colab GPU runtime
 
-The configuration cell in each notebook already points at this repository and commit `278c9050e7d8807a45f262201a5aa0760508c061`.
+The configuration cell in each notebook already points at this repository and commit `ee3c2a1045f48b9ad77ca61f3d480f8cb669e8d6`.
 
 ### Notebook 01
 

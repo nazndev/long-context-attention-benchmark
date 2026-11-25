@@ -307,6 +307,11 @@ with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as archive:
         for path in figure_dir.glob("single_gpu_*.png"):
             archive.write(path, path.relative_to(project))
 print("Baseline archive:", archive_path)
+try:
+    from google.colab import files
+    files.download(str(archive_path))
+except ImportError:
+    print("Save that ZIP before the runtime ends.")
         """),
     ],
 )
